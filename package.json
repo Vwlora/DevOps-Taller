@@ -1,0 +1,12 @@
+{
+  "name": "nuberuta-panel-envios",
+  "version": "2.4.0",
+  "description": "Panel de seguimiento de envios de NubeRuta (empresa ficticia para taller de DevOps)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --check server.js"
+  },
+  "author": "",
+  "license": "MIT"
+}

@@ -1,0 +1,42 @@
+name: CI/CD Pipeline - NubeRuta
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  construir-y-desplegar:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Clonar el codigo fuente
+      uses: actions/checkout@v5
+
+    - name: Validar integridad del codigo
+      run: node --chek server.js
+
+    - name: Construir imagen Docker
+      run: docker build -t panel-envios:v1 .
+
+    - name: Desplegar contenedor
+      run: docker run -d --name panel-envios -p 3000:3000 panel-envios:v1
+
+    - name: Monitorear disponibilidad
+      run: curl --fail --retry 5 --retry-delay 1 --retry-all-errors http://localhost:3000/healt
+
+    - name: Reporte de despliegue
+      run: |
+        SALUD=$(curl -s http://localhost:3000/health)
+        TOTAL=$(curl -s http://localhost:3000/api/envios | grep -o '"guia"' | wc -l)
+        {
+          echo "## Despliegue exitoso - NubeRuta"
+          echo ""
+          echo "| Verificacion | Resultado |"
+          echo "|---|---|"
+          echo "| Respuesta de /health | \`$SALUD\` |"
+          echo "| Envios visibles en el panel | $TOTAL |"
+          echo "| Imagen desplegada | panel-envios:v1 |"
+          echo ""
+          echo "Incidente INC-2031 resuelto. El panel esta en linea."
+        } >> "$GITHUB_STEP_SUMMARY"
