@@ -23,7 +23,7 @@ jobs:
       run: docker run -d --name panel-envios -p 3000:3000 panel-envios:v1
 
     - name: Monitorear disponibilidad
-      run: curl --fail --retry 5 --retry-delay 1 --retry-all-errors http://localhost:3000/healt
+      run: curl --fail --retry 5 --retry-delay 1 --retry-all-errors http://localhost:3000/health
 
     - name: Reporte de despliegue
       run: |
